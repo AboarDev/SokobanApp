@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_activity_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".GameActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:menu="@menu/themenu"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:title="@string/app_name" />
+
+    <TableLayout
+        android:id="@+id/sokobanGrid"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/right"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+
+    <TextView
+        android:id="@+id/countLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:text="Moves:"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/theCount" />
+
+    <TextView
+        android:id="@+id/theCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="0"
+        android:textSize="24sp"
+        app:layout_constraintStart_toEndOf="@+id/countLabel"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+
+    <TextView
+        android:id="@+id/completedLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Completed:"
+        app:layout_constraintStart_toStartOf="@+id/countLabel"
+        app:layout_constraintTop_toBottomOf="@+id/theCount" />
+
+    <TextView
+        android:id="@+id/theCompleted"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="0/1"
+        android:textSize="24sp"
+        app:layout_constraintStart_toEndOf="@+id/completedLabel"
+        app:layout_constraintTop_toBottomOf="@+id/theCount" />
+
+    <TextView
+        android:id="@+id/ElapsedLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/time_label"
+        app:layout_constraintStart_toStartOf="@+id/countLabel"
+        app:layout_constraintTop_toBottomOf="@+id/theCompleted" />
+
+    <TextView
+        android:id="@+id/timeElapsed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:textSize="24sp"
+        app:layout_constraintStart_toEndOf="@+id/ElapsedLabel"
+        app:layout_constraintTop_toBottomOf="@+id/theCompleted" />
+
+    <ImageButton
+        android:id="@+id/up"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:contentDescription="@string/upArrow"
+        android:onClick="onArrowClick"
+        android:src="@drawable/ic_up"
+        app:layout_constraintBottom_toTopOf="@+id/right"
+        app:layout_constraintStart_toEndOf="@+id/left" />
+
+    <ImageButton
+        android:id="@+id/down"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:contentDescription="@string/downArrow"
+        android:onClick="onArrowClick"
+        android:src="@drawable/ic_down"
+        app:layout_constraintTop_toBottomOf="@+id/right"
+        app:layout_constraintLeft_toRightOf="@id/left"
+        tools:layout_editor_absoluteX="120dp" />
+
+    <ImageButton
+        android:id="@+id/left"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="16dp"
+        android:contentDescription="@string/leftArrow"
+        android:onClick="onArrowClick"
+        android:src="@drawable/ic_left"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/down"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/timeElapsed" />
+
+    <ImageButton
+        android:id="@+id/right"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:contentDescription="@string/rightArrow"
+        android:onClick="onArrowClick"
+        android:src="@drawable/ic_right"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/down"
+        app:layout_constraintTop_toBottomOf="@+id/timeElapsed"
+        tools:layout_editor_absoluteX="60dp" />
+
+    <ImageButton
+        android:id="@+id/playPause"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:onClick="onPlayPauseClick"
+        app:layout_constraintStart_toEndOf="@+id/down"
+        app:layout_constraintTop_toBottomOf="@+id/right"
+        app:srcCompat="@drawable/ic_pause" />
+
+    <View
+        android:id="@+id/divider2"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginStart="8dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintBottom_toTopOf="@+id/up"
+        app:layout_constraintEnd_toEndOf="@+id/right"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/timeElapsed" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

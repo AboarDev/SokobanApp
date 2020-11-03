@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">Sokoban Droid</string>
+    <string name="dialog_title">Restarting the level will erase all progress, are you sure?</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="count">0</string>
+    <string name="action_settings">TheSettings</string>
+    <string name="action_favorite">fav</string>
+    <string name="title_activity_browse">browse</string>
+    <string name="tab_text_1">Tab 1</string>
+    <string name="tab_text_2">Tab 2</string>
+    <string name="upArrow">Up Arrow</string>
+    <string name="downArrow">Down Arrow</string>
+    <string name="leftArrow">Left Arrow</string>
+    <string name="rightArrow">Right Arrow</string>
+    <string name="action_list">List of levels</string>
+    <string name="action_restart">Restart</string>
+    <string name="action_undo">Undo</string>
+    <string name="action_redo">Redo</string>
+    <string name="time_label">Elapsed:</string>
+    <string name="completed">Level Completed!</string>
+</resources>
