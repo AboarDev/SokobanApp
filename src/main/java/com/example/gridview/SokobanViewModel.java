@@ -72,7 +72,6 @@ public class SokobanViewModel extends ViewModel {
         paused = false;
         totalPaused = (long) 0;
         totalElapsed = (long) 0;
-        //totalElapsed = theGame.getElapsed();
         String name = level.get(3);
         theGame.addLevel(name,Integer.parseInt(level.get(2)),Integer.parseInt(level.get(1)),level.get(0));
     }
@@ -121,16 +120,16 @@ public class SokobanViewModel extends ViewModel {
             LastMove.elapsed = totalElapsed;
         }
         String out = "";
-        Long elapsed = totalElapsed.longValue();
-        Long milliseconds =  totalElapsed % 1000;
+        long elapsed = totalElapsed;
+        long milliseconds =  totalElapsed % 1000;
         elapsed = (elapsed - milliseconds) /1000;
-        Long seconds = elapsed % 60;
+        long seconds = elapsed % 60;
         elapsed = (elapsed - seconds) / 60;
-        Long minutes = elapsed % 60;
+        long minutes = elapsed % 60;
 
-        out += minutes.intValue();
+        out += (int) minutes;
         out += " : ";
-        out += seconds.intValue();
+        out += (int) seconds;
         out += ".";
         out += milliseconds / 100;
         totalPaused = (long) 0;
