@@ -7,7 +7,7 @@ import sokoban.*;
 import java.util.Calendar;
 
 public class SokobanViewModel extends ViewModel {
-    private Game theGame;
+    private Game game;
     Boolean canMove;
     List<List<String>> levelData;
     Boolean dataAdded;
@@ -16,6 +16,7 @@ public class SokobanViewModel extends ViewModel {
     Long totalPaused;
     Calendar timePaused;
     Boolean paused;
+    int time;
     public SokobanViewModel() {
         super();
         canMove = true;
@@ -24,11 +25,12 @@ public class SokobanViewModel extends ViewModel {
         totalPaused = (long) 0;
         totalElapsed = (long) 0;
         levelIndex = 0;
-        theGame = new Game();
+        game = new Game();
+        time = -1;
     }
 
     public void closeLevel () {
-        theGame.removeLevel(theGame.getCurrentLevelName());
+        game.removeLevel(game.getCurrentLevelName());
     }
 
     public String[] getLevels () {
@@ -43,23 +45,23 @@ public class SokobanViewModel extends ViewModel {
 
     public Move undo(){
         Move theMove = null;
-        int moveCount = theGame.getMoveCount();
+        int moveCount = game.getMoveCount();
         if (moveCount > 0){
-            theMove = theGame.getMove();
+            theMove = game.getMove();
             if (theMove.hasMove){
-                theGame.move(theMove.direction,true,theMove.includesCrate);
-                System.out.println(theGame.toString());
+                game.move(theMove.direction,true,theMove.includesCrate);
+                System.out.println(game.toString());
             }
         }
         return theMove;
     }
 
     public boolean getLevelByString(String inp){
-        Level foundLevel = theGame.findLevel(inp);
+        Level foundLevel = game.findLevel(inp);
         if (foundLevel != null){
             paused = false;
-            theGame.theLevel = foundLevel;
-            totalElapsed = theGame.getElapsed();
+            game.theLevel = foundLevel;
+            totalElapsed = game.getElapsed();
             return true;
         } else {
             return false;
@@ -71,37 +73,37 @@ public class SokobanViewModel extends ViewModel {
         totalPaused = (long) 0;
         totalElapsed = (long) 0;
         String name = level.get(3);
-        theGame.addLevel(name,Integer.parseInt(level.get(2)),Integer.parseInt(level.get(1)),level.get(0));
+        game.addLevel(name,Integer.parseInt(level.get(2)),Integer.parseInt(level.get(1)),level.get(0));
     }
     public int getLevelWidth () {
-            return theGame.theLevel.getWidth();
+            return game.theLevel.getWidth();
     }
     public int getLevelHeight () {
-            return theGame.theLevel.getHeight();
+            return game.theLevel.getHeight();
     }
     public String getLevelSchema(){
-        return theGame.theLevel.getSchema();
+        return game.theLevel.getSchema();
     }
     public Move move (Direction theDirection){
         Move theMove = null;
         if (canMove) {
             canMove = true;
-            theMove = theGame.move(theDirection,false);
-            System.out.println(theGame.toString());
+            theMove = game.move(theDirection,false);
+            System.out.println(game.toString());
         }
         return theMove;
     }
     public int moves (){
-        return theGame.getMoveCount();
+        return game.getMoveCount();
     }
     public int completed (){
-        return theGame.getCompletedCount();
+        return game.getCompletedCount();
     }
     public int total (){
-        return theGame.getTargetCount();
+        return game.getTargetCount();
     }
     public String getElapsed (Move LastMove) {
-        totalElapsed += theGame.getElapsed();
+        totalElapsed += game.getElapsed();
         if (totalPaused > 0){
             totalElapsed -= totalPaused;
         }
@@ -136,5 +138,10 @@ public class SokobanViewModel extends ViewModel {
             totalPaused += i;
             System.out.println(totalPaused);
         }
+    }
+
+    public int timer () {
+        time += 1;
+        return time;
     }
 }

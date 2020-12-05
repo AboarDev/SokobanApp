@@ -12,7 +12,6 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.media.MediaPlayer;
 
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -35,16 +34,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import sokoban.*;
 
 public class GameActivity extends AppCompatActivity {
-    MediaPlayer theMediaPlayer;
     int[] colorIndex;
     char[] charIndex;
     int squareSize;
     int[] ids;
-    SokobanViewModel theController;
+    SokobanViewModel viewModel;
     List<View> rows;
     View thePlayer;
     List<MovableView> theCrates;
@@ -64,28 +64,27 @@ public class GameActivity extends AppCompatActivity {
         //create toolbar
         Toolbar myToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
-        theMediaPlayer = MediaPlayer.create(this.getApplicationContext(),R.raw.move);
-        theController = new ViewModelProvider(this).get(SokobanViewModel.class);
-        if (!theController.dataAdded) {
-            theController.levelData = parseLevels("levels.csv");
+        viewModel = new ViewModelProvider(this).get(SokobanViewModel.class);
+        if (!viewModel.dataAdded) {
+            viewModel.levelData = parseLevels("levels.csv");
         }
-        loadLevel(theController.levelIndex);
+        loadLevel(viewModel.levelIndex);
         ids = new int[]{R.id.up,R.id.down,R.id.left,R.id.right};
+        startTimer();
     }
     @Override
     protected void onPause () {
         super.onPause();
-        theController.pause();
+        viewModel.pause();
     }
     @Override
     protected void onResume () {
         super.onResume();
-        theController.resume();
+        viewModel.resume();
     }
     @Override
     protected void onDestroy (){
         super.onDestroy();
-        if (theMediaPlayer != null) theMediaPlayer.release();
     }
     public void loadLevel(int id){
         if(rows != null){
@@ -98,18 +97,18 @@ public class GameActivity extends AppCompatActivity {
                 mainLayout.removeView(v);
             }
         }
-        List<String> theLevel = theController.levelData.get(id);
+        List<String> theLevel = viewModel.levelData.get(id);
         String theName = theLevel.get(3);
-        if(!theController.getLevelByString(theName)){
-            theController.addLevel(theLevel);
+        if(!viewModel.getLevelByString(theName)){
+            viewModel.addLevel(theLevel);
         }
         Objects.requireNonNull(getSupportActionBar()).setTitle(theName);
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         int width = displayMetrics.widthPixels;
         int height = displayMetrics.heightPixels;
-        int theWidth = theController.getLevelWidth();
-        int theHeight = theController.getLevelHeight();
+        int theWidth = viewModel.getLevelWidth();
+        int theHeight = viewModel.getLevelHeight();
         int viewWidth;
         if (height > width){
             if (theWidth > theHeight){
@@ -124,7 +123,7 @@ public class GameActivity extends AppCompatActivity {
             viewWidth = (height - height/4) / theWidth;
         }
         squareSize = viewWidth;
-        rows = makeLevel(theController.getLevelSchema(),theWidth,
+        rows = makeLevel(viewModel.getLevelSchema(),theWidth,
                 theHeight, viewWidth);
     }
 
@@ -152,19 +151,19 @@ public class GameActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1 && data != null){
             int X = data.getIntExtra("index",-1);
-            if (X != theController.levelIndex){
-                theController.levelIndex = X;
+            if (X != viewModel.levelIndex){
+                viewModel.levelIndex = X;
                 loadLevel(X);
             } else{
-                loadLevel(theController.levelIndex);
+                loadLevel(viewModel.levelIndex);
             }
         }
     }
 
     public void openList(MenuItem item) {
         Intent theIntent = new Intent(this, listOf.class);
-        theIntent.putExtra("list",theController.getLevels());
-        theIntent.putExtra("current", theController.levelIndex);
+        theIntent.putExtra("list", viewModel.getLevels());
+        theIntent.putExtra("current", viewModel.levelIndex);
         startActivityForResult(theIntent,1);
     }
 
@@ -181,7 +180,7 @@ public class GameActivity extends AppCompatActivity {
         theCrates = new ArrayList<>();
         int colorInt;
         TableLayout aTable = findViewById(R.id.sokobanGrid);
-        if (theController.paused){
+        if (viewModel.paused){
             aTable.setVisibility(View.INVISIBLE);
         }
         TableRow.LayoutParams theParams = new TableRow.LayoutParams(viewWidth, viewWidth);
@@ -217,7 +216,7 @@ public class GameActivity extends AppCompatActivity {
                     theSet.applyTo(mainLayout);
 
                     newView.bringToFront();
-                    if (theController.paused) {
+                    if (viewModel.paused) {
                         newView.setVisibility(View.INVISIBLE);
                     }
                     if (theindex == 4){
@@ -287,9 +286,7 @@ public class GameActivity extends AppCompatActivity {
                     break;
             }
             //make move
-            Move theMove = theController.move(theDirection);
-            //play sound
-            theMediaPlayer.start();
+            Move theMove = viewModel.move(theDirection);
             //make animation
             makeAnimation(dimension, directionStr, theMove, false);
             //change displayed info
@@ -352,7 +349,7 @@ public class GameActivity extends AppCompatActivity {
 
     public void onUndoClick (MenuItem item) {
         if (canMove){
-            Move theMove = theController.undo();
+            Move theMove = viewModel.undo();
             if (theMove != null && theMove.hasMove) {
                 Character directionStr = null;
                 int dimension = this.squareSize;
@@ -383,26 +380,38 @@ public class GameActivity extends AppCompatActivity {
         TextView theCount = findViewById(R.id.theCount);
         TextView theCompleted = findViewById(R.id.theCompleted);
         TextView elapsed = findViewById(R.id.timeElapsed);
-        theCount.setText(String.valueOf(theController.moves()));
-        int completed = theController.completed();
-        int total = theController.total();
+        theCount.setText(String.valueOf(viewModel.moves()));
+        int completed = viewModel.completed();
+        int total = viewModel.total();
         theCompleted.setText((completed + "/"  + total));
         if (total == completed) {
             Snackbar.make(findViewById(R.id.main_activity_layout), R.string.completed,
                     BaseTransientBottomBar.LENGTH_LONG)
                     .show();
         }
+        elapsed.setText(viewModel.getElapsed(theMove));
+    }
 
+    public void startTimer () {
+        TextView elapsed = findViewById(R.id.timeElapsed);
+        TimerTask repeatedTask = new TimerTask() {
+            public void run() {
+                String time = String.valueOf(viewModel.timer());
+                runOnUiThread(() -> elapsed.setText(time));
+            }
+        };
+        Timer timer = new Timer("Timer");
 
-        elapsed.setText(theController.getElapsed(theMove));
-
+        long delay = 1000L;
+        long period = 1000L * 60L * 60L * 24L;
+        timer.scheduleAtFixedRate(repeatedTask, 0, 1000);
     }
 
     public void onPlayPauseClick (View view) {
         ImageButton theButton = (ImageButton) view;
-        if (!theController.paused){
+        if (!viewModel.paused){
             theButton.setImageResource(R.drawable.ic_play);
-            theController.pause();
+            viewModel.pause();
             findViewById(R.id.sokobanGrid).setVisibility(View.INVISIBLE);
             thePlayer.setVisibility(View.INVISIBLE);
             for (View v: theCrates){
@@ -410,7 +419,7 @@ public class GameActivity extends AppCompatActivity {
             }
         } else {
             theButton.setImageResource(R.drawable.ic_pause);
-            theController.resume();
+            viewModel.resume();
             findViewById(R.id.sokobanGrid).setVisibility(View.VISIBLE);
             thePlayer.setVisibility(View.VISIBLE);
             for (View v: theCrates){
@@ -424,8 +433,8 @@ public class GameActivity extends AppCompatActivity {
         builder.setTitle(R.string.dialog_title)
                 .setPositiveButton(R.string.ok, (dialog, id) -> {
                     dialog.dismiss();
-                    theController.closeLevel();
-                    loadLevel(theController.levelIndex);
+                    viewModel.closeLevel();
+                    loadLevel(viewModel.levelIndex);
                 })
                 .setNegativeButton(R.string.cancel, (dialog, id) -> {
                     dialog.dismiss();
