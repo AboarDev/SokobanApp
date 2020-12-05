@@ -49,6 +49,7 @@ public class GameActivity extends AppCompatActivity {
     View thePlayer;
     List<MovableView> theCrates;
     Boolean canMove;
+    Timer timer;
     public GameActivity(){
         charIndex = new char[]{'#', '.', '+', 'x', 'w','X','W'};
         colorIndex = new int[]{0xFF414141, 0xFFd4d4d4, 0xFF737048, 0xBC28549c, 0xBC82c142,0xBC28549c};
@@ -88,6 +89,8 @@ public class GameActivity extends AppCompatActivity {
     }
     public void loadLevel(int id){
         if(rows != null){
+            viewModel.seconds = -1;
+            viewModel.minutes = 0;
             for (View aView: rows){
                 ((ViewGroup) aView.getParent()).removeView(aView);
             }
@@ -400,16 +403,14 @@ public class GameActivity extends AppCompatActivity {
                 runOnUiThread(() -> elapsed.setText(time));
             }
         };
-        Timer timer = new Timer("Timer");
-
-        long delay = 1000L;
-        long period = 1000L * 60L * 60L * 24L;
+        timer = new Timer("Timer");
         timer.scheduleAtFixedRate(repeatedTask, 0, 1000);
     }
 
     public void onPlayPauseClick (View view) {
         ImageButton theButton = (ImageButton) view;
         if (!viewModel.paused){
+            timer.cancel();
             theButton.setImageResource(R.drawable.ic_play);
             viewModel.pause();
             findViewById(R.id.sokobanGrid).setVisibility(View.INVISIBLE);
@@ -418,6 +419,7 @@ public class GameActivity extends AppCompatActivity {
                 v.setVisibility(View.INVISIBLE);
             }
         } else {
+            startTimer();
             theButton.setImageResource(R.drawable.ic_pause);
             viewModel.resume();
             findViewById(R.id.sokobanGrid).setVisibility(View.VISIBLE);

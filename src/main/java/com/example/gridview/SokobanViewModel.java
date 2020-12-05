@@ -16,7 +16,8 @@ public class SokobanViewModel extends ViewModel {
     Long totalPaused;
     Calendar timePaused;
     Boolean paused;
-    int time;
+    int seconds;
+    int minutes;
     public SokobanViewModel() {
         super();
         canMove = true;
@@ -26,7 +27,8 @@ public class SokobanViewModel extends ViewModel {
         totalElapsed = (long) 0;
         levelIndex = 0;
         game = new Game();
-        time = -1;
+        seconds = -1;
+        minutes = 0;
     }
 
     public void closeLevel () {
@@ -140,8 +142,13 @@ public class SokobanViewModel extends ViewModel {
         }
     }
 
-    public int timer () {
-        time += 1;
-        return time;
+    public String timer () {
+        if (seconds < 60){
+            seconds ++;
+        }else {
+            seconds = 0;
+            minutes++;
+        }
+        return minutes + ":" + seconds;
     }
 }
