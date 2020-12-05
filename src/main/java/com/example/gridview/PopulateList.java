@@ -25,33 +25,21 @@ public class PopulateList extends RecyclerView.Adapter<PopulateList.MyViewHolder
         mPayload = myListener;
     }
 
-    // Create new views (invoked by the layout manager)
     @Override
     public PopulateList.MyViewHolder onCreateViewHolder(ViewGroup parent,
                                                         int viewType) {
-        // create a new view
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.level_view, parent, false);
-        //...
-        MyViewHolder vh = new MyViewHolder(v);
-        return vh;
+        return new MyViewHolder(v);
     }
 
-    // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        // - replace the contents of the view with that element
         holder.thePosition.setText(String.valueOf(position + 1));
         holder.theName.setText(mDataset[position]);
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mPayload.setPayload(position);
-            }
-        });
+        holder.itemView.setOnClickListener(v -> mPayload.setPayload(position));
     }
 
-    // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
         return mDataset.length;

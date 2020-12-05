@@ -100,8 +100,7 @@ public class GameActivity extends AppCompatActivity {
         }
         List<String> theLevel = theController.levelData.get(id);
         String theName = theLevel.get(3);
-        if(theController.getLevelByString(theName)){
-        }else {
+        if(!theController.getLevelByString(theName)){
             theController.addLevel(theLevel);
         }
         Objects.requireNonNull(getSupportActionBar()).setTitle(theName);
@@ -130,7 +129,7 @@ public class GameActivity extends AppCompatActivity {
     }
 
     public List<List<String>> parseLevels (String file) {
-        List<List<String>> allLevels = new ArrayList<List<String>>();
+        List<List<String>> allLevels = new ArrayList<>();
         try {
             BufferedReader reader;
             reader = new BufferedReader(new InputStreamReader(getAssets().open(file)));
@@ -178,7 +177,7 @@ public class GameActivity extends AppCompatActivity {
     public List<View> makeLevel (String inp,int theWidth, int theHeight, int viewWidth) {
 
         ConstraintLayout mainLayout = findViewById(R.id.main_activity_layout);
-        List<View> theRows = new ArrayList<View>();
+        List<View> theRows = new ArrayList<>();
         theCrates = new ArrayList<>();
         int colorInt;
         TableLayout aTable = findViewById(R.id.sokobanGrid);
@@ -308,7 +307,8 @@ public class GameActivity extends AppCompatActivity {
             } else {
                 animLength = ((int) thePlayer.getY() + dimension);
             }
-            ObjectAnimator playerAnimator = new ObjectAnimator().ofFloat(thePlayer, direction.toString(), animLength);
+            new ObjectAnimator();
+            ObjectAnimator playerAnimator = ObjectAnimator.ofFloat(thePlayer, direction.toString(), animLength);
             playerAnimator.setDuration(200);
 
             if (!theMove.includesCrate) {
@@ -329,7 +329,8 @@ public class GameActivity extends AppCompatActivity {
                             v.X -= theMove.moveX;
                             v.Y -= theMove.moveY;
                         }
-                        ObjectAnimator crateAnimator = new ObjectAnimator().ofFloat(v,
+                        new ObjectAnimator();
+                        ObjectAnimator crateAnimator = ObjectAnimator.ofFloat(v,
                                 direction.toString(),
                                 animLength);
                         crateAnimator.setDuration(200);
@@ -385,7 +386,7 @@ public class GameActivity extends AppCompatActivity {
         theCount.setText(String.valueOf(theController.moves()));
         int completed = theController.completed();
         int total = theController.total();
-        theCompleted.setText((String.valueOf(completed) + "/"  + String.valueOf(total)));
+        theCompleted.setText((completed + "/"  + total));
         if (total == completed) {
             Snackbar.make(findViewById(R.id.main_activity_layout), R.string.completed,
                     BaseTransientBottomBar.LENGTH_LONG)

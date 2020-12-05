@@ -16,13 +16,11 @@ public class SokobanViewModel extends ViewModel {
     Long totalPaused;
     Calendar timePaused;
     Boolean paused;
-    Boolean rotate;
     public SokobanViewModel() {
         super();
         canMove = true;
         dataAdded = false;
         paused = false;
-        rotate = false;
         totalPaused = (long) 0;
         totalElapsed = (long) 0;
         levelIndex = 0;
@@ -76,21 +74,13 @@ public class SokobanViewModel extends ViewModel {
         theGame.addLevel(name,Integer.parseInt(level.get(2)),Integer.parseInt(level.get(1)),level.get(0));
     }
     public int getLevelWidth () {
-        if (rotate){
-            return theGame.theLevel.getHeight();
-        }else {
             return theGame.theLevel.getWidth();
-        }
     }
     public int getLevelHeight () {
-        if (rotate){
-            return theGame.theLevel.getWidth();
-        } else {
             return theGame.theLevel.getHeight();
-        }
     }
     public String getLevelSchema(){
-        return theGame.theLevel.getSchema(rotate);
+        return theGame.theLevel.getSchema();
     }
     public Move move (Direction theDirection){
         Move theMove = null;
@@ -111,7 +101,6 @@ public class SokobanViewModel extends ViewModel {
         return theGame.getTargetCount();
     }
     public String getElapsed (Move LastMove) {
-        Calendar now = Calendar.getInstance();
         totalElapsed += theGame.getElapsed();
         if (totalPaused > 0){
             totalElapsed -= totalPaused;
@@ -143,7 +132,7 @@ public class SokobanViewModel extends ViewModel {
         if (paused) {
             paused = false;
             Calendar now = Calendar.getInstance();
-            Long i = now.getTimeInMillis() - timePaused.getTimeInMillis();
+            long i = now.getTimeInMillis() - timePaused.getTimeInMillis();
             totalPaused += i;
             System.out.println(totalPaused);
         }

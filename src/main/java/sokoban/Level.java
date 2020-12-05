@@ -143,24 +143,13 @@ public class Level {
 		}
 	}
 
-	public String getSchema (Boolean rotate){
+	public String getSchema (){
 		StringBuilder out = new StringBuilder();
-		if (rotate) {
-			int rotatedHeight = getWidth();
-			int rotatedWidth = getHeight();
-			for (int y = rotatedHeight - 1; y >= 0; y--) {
-				for (int x = 0; x < rotatedWidth; x++) {
-					out.append(allPlaceables[x][y]);
-				}
-			}
-		}else {
-			for (Placeable[] item : allPlaceables) {
-				for (Placeable theItem : item) {
-					out.append(theItem.toString());
-				}
+		for (Placeable[] item : allPlaceables) {
+			for (Placeable theItem : item) {
+				out.append(theItem.toString());
 			}
 		}
-
 		System.out.println(out.toString());
 		return out.toString();
 	}

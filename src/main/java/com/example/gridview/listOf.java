@@ -11,9 +11,6 @@ import android.os.Bundle;
 import android.transition.Explode;
 
 public class listOf extends AppCompatActivity {
-    private RecyclerView recyclerView;
-    private RecyclerView.Adapter mAdapter;
-    private RecyclerView.LayoutManager layoutManager;
     String[] theLevels;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,27 +26,23 @@ public class listOf extends AppCompatActivity {
 
         getWindow().setExitTransition(new Explode());
 
-        recyclerView = (RecyclerView) findViewById(R.id.level_view);
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.level_view);
 
-        //recyclerView.setHasFixedSize(true);
-        layoutManager = new LinearLayoutManager(this);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
         Intent theIntent = getIntent();
         theLevels = theIntent.getStringArrayExtra("list");
-        int theX = theIntent.getIntExtra("index",0);
-        mAdapter = new PopulateList(theLevels,new Payload() {
-
+        recyclerView.setAdapter(new PopulateList(theLevels, new Payload() {
             @Override
             public void setPayload(int i) {
                 System.out.println(i);
                 Intent theResults = new Intent();
-                theResults.putExtra("index",i);
-                setResult(1,theResults);
+                theResults.putExtra("index", i);
+                setResult(1, theResults);
                 finish();
             }
-        });
-        recyclerView.setAdapter(mAdapter);
+        }));
 
     }
 
