@@ -387,6 +387,7 @@ public class GameActivity extends AppCompatActivity {
         int total = viewModel.total();
         theCompleted.setText((completed + "/"  + total));
         if (total == completed) {
+            timer.cancel();
             Snackbar.make(findViewById(R.id.main_activity_layout), R.string.completed,
                     BaseTransientBottomBar.LENGTH_LONG)
                     .show();
