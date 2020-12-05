@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel;
 
 import java.util.List;
 import sokoban.*;
-import java.util.Calendar;
 
 public class SokobanViewModel extends ViewModel {
     private Game game;
@@ -12,9 +11,6 @@ public class SokobanViewModel extends ViewModel {
     List<List<String>> levelData;
     Boolean dataAdded;
     public int levelIndex;
-    Long totalElapsed;
-    Long totalPaused;
-    Calendar timePaused;
     Boolean paused;
     int seconds;
     int minutes;
@@ -23,8 +19,6 @@ public class SokobanViewModel extends ViewModel {
         canMove = true;
         dataAdded = false;
         paused = false;
-        totalPaused = (long) 0;
-        totalElapsed = (long) 0;
         levelIndex = 0;
         game = new Game();
         seconds = -1;
@@ -63,7 +57,6 @@ public class SokobanViewModel extends ViewModel {
         if (foundLevel != null){
             paused = false;
             game.theLevel = foundLevel;
-            totalElapsed = game.getElapsed();
             return true;
         } else {
             return false;
@@ -72,8 +65,6 @@ public class SokobanViewModel extends ViewModel {
 
     public void addLevel (List<String> level){
         paused = false;
-        totalPaused = (long) 0;
-        totalElapsed = (long) 0;
         String name = level.get(3);
         game.addLevel(name,Integer.parseInt(level.get(2)),Integer.parseInt(level.get(1)),level.get(0));
     }
@@ -104,41 +95,14 @@ public class SokobanViewModel extends ViewModel {
     public int total (){
         return game.getTargetCount();
     }
-    public String getElapsed (Move LastMove) {
-        totalElapsed += game.getElapsed();
-        if (totalPaused > 0){
-            totalElapsed -= totalPaused;
-        }
-        if (LastMove != null && LastMove.elapsed != null) {
-            LastMove.elapsed = totalElapsed;
-        }
-        String out = "";
-        long elapsed = totalElapsed;
-        long milliseconds =  totalElapsed % 1000;
-        elapsed = (elapsed - milliseconds) /1000;
-        long seconds = elapsed % 60;
-        elapsed = (elapsed - seconds) / 60;
-        long minutes = elapsed % 60;
 
-        out += (int) minutes;
-        out += " : ";
-        out += (int) seconds;
-        out += ".";
-        out += milliseconds / 100;
-        totalPaused = (long) 0;
-        return out;
-    }
     public void pause () {
         paused = true;
-        timePaused = Calendar.getInstance();
     }
+
     public void resume () {
         if (paused) {
             paused = false;
-            Calendar now = Calendar.getInstance();
-            long i = now.getTimeInMillis() - timePaused.getTimeInMillis();
-            totalPaused += i;
-            System.out.println(totalPaused);
         }
     }
 

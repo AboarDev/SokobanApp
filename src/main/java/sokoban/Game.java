@@ -118,31 +118,6 @@ public class Game {
 	public int getCompletedCount(){
 		return theLevel.getCompletedCount();
 	}
-	public Long getElapsed () {
-		if (theLevel.moves.size() > 1) {
-			int count = theLevel.moves.size();
-			theLevel.timeInitialized = null;
-			return theLevel.moves.get(count - 1).time.getTimeInMillis() -
-					theLevel.moves.get(count - 2).time.getTimeInMillis();
-		}
-		else if (theLevel.moves.size() == 1){
-			Move theMove = theLevel.moves.get(0);
-			if (theMove.time != null && theLevel.timeInitialized != null) {
-				return theMove.time.getTimeInMillis() -
-						theLevel.timeInitialized.getTimeInMillis();
-			}else {
-				return (long) 0 ;
-			}
-		}
-		else{
-			return (long) 0 ;
-		}
-	}
-	public void setLastMoveElapsed(Long theElapsed){
-		if (theLevel.moves.size() > 0) {
-			getMove().elapsed = theElapsed;
-		}
-	}
 	public List<String> getLevelNames() {
 		List<String> joined = gameLevels.stream()
 			    .map(Object::toString)

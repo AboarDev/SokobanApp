@@ -241,7 +241,7 @@ public class GameActivity extends AppCompatActivity {
                 count++;
             }
         }
-        updateLabels(null);
+        updateLabels();
         return theRows;
     }
 
@@ -293,7 +293,7 @@ public class GameActivity extends AppCompatActivity {
             //make animation
             makeAnimation(dimension, directionStr, theMove, false);
             //change displayed info
-            updateLabels(theMove);
+            updateLabels();
         }
 
     }
@@ -372,17 +372,16 @@ public class GameActivity extends AppCompatActivity {
                         dimension = dimension * -1;
                         break;
                 }
-                updateLabels(null);
+                updateLabels();
                 //animates undo
                 makeAnimation(dimension, directionStr, theMove,true);
             }
         }
     }
 
-    public void updateLabels (Move theMove) {
+    public void updateLabels () {
         TextView theCount = findViewById(R.id.theCount);
         TextView theCompleted = findViewById(R.id.theCompleted);
-        TextView elapsed = findViewById(R.id.timeElapsed);
         theCount.setText(String.valueOf(viewModel.moves()));
         int completed = viewModel.completed();
         int total = viewModel.total();
@@ -392,7 +391,6 @@ public class GameActivity extends AppCompatActivity {
                     BaseTransientBottomBar.LENGTH_LONG)
                     .show();
         }
-        elapsed.setText(viewModel.getElapsed(theMove));
     }
 
     public void startTimer () {
